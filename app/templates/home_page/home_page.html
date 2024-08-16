@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home_page.css') }}">
+  <style>
+    #toggleContainer {
+      display: none;
+      border: 1px solid #ccc;
+    }
+  </style>
+  <script>
+      </script>
+</head>
+
+<body>
+  <main>
+    <div class="header">
+      <div class="container">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="{{ url_for('main.login') }}">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="content">
+      <div class="content-type">
+        <span class="sub-heading">Posts</span><span class="add-btn">
+          <div>
+            <button id="add-btn" class="add-btn" type="submit">Add +</button>
+          </div>
+        </span>
+      </div>
+      <hr />
+      <div id="toggleContainer" style="margin-bottom: 10px; width: 50%;">
+        <div class="posted-by-name-like"
+          style="height: 20px; background: rgb(170, 169, 169); display: flex; justify-content: space-between; padding: 2px 5px;">
+          <span>Post</span>
+          <button id="close-btn"
+            style=" border-radius: 6px; border: none;color:white; background: rgb(207, 25, 25);">X</button>
+        </div>
+        <form method="POST" action="">
+          {{ newPostForm.hidden_tag() }}
+          {{ newPostForm.post.label }}<br>
+          {{ newPostForm.post() }}<br>
+          <div>
+            {{ newPostForm.submit() }}
+          </div>
+        </form>
+      </div>
+      {% if posts %}
+      <div class="posts-container"
+        style="display: flex; flex-direction: column; row-gap: 10px; justify-content: center;">
+        {% for post in posts %}
+        <div class="post" style="height: 20%; width: 50%; border: 1px solid black;">
+          <div class="posted-by-name-like"
+            style="height: 20px; background: rgb(170, 169, 169); display: flex; justify-content: space-between; padding: 2px 5px;">
+            <span> {{ post.posted_by['user_name'] }}</span> <a href="">Likes {{ post.likes | length }}</a>
+          </div>
+          <div class="posted-data" style="padding: 2px 5px;">
+            {{ post.posted_content['content'] }}
+          </div>
+          <div class="total-comments" style="padding: 2px 5px;">
+            {% if post.comments | length != 0 %}
+            <a href="">view {{ post.comments | length }} comment</a>
+            {% else %}
+            <span style="color: #ccc;">No Comments</span>
+            {% endif %}
+          </div>
+          <div class="add-comment-form" style="height: 60px;  width: 100%;">
+            <form method="POST" action="{{ url_for('main.home') }}" data-form-type="comment" data-post-id='{{ post._id }}' style="display: flex; justify-content: space-between; padding: 2px 4px;">
+              <div style="width: 85%;">
+                {{ addCommentForm.hidden_tag() }}
+                {{ addCommentForm.comment() }}<br>
+              </div>
+              <div>
+                {{ addCommentForm.commentBtn() }}
+              </div>
+            </form>
+          </div>
+          <div style="height: 20px; background: rgb(170, 169, 169); color: aliceblue; font-size: small;">
+            11/08/2024 . 17:34
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No posts available.</p>
+        {% endif %}
+
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <script>
+    // $(document).ready(function() {
+    //         // Handle form submission
+    //         $('form[data-form-type="comment"]').on('submit', function(event) {
+    //             event.preventDefault(); // Prevent the default form submission
+
+    //             var form = $(this);
+    //             var postId = form.data('post-id'); // Get the post ID from data attribute
+    //             var formData = form.serialize(); // Serialize form data
+    //             formData += '&post_id=' + encodeURIComponent(postId); // Append post ID to form data
+
+    //             $.ajax({
+    //                 url: form.attr('action'), // Form action URL
+    //                 type: form.attr('method'), // Form method
+    //                 data: formData,
+    //                 success: function(response) {
+    //                     if (response.status === 'success') {
+    //                         alert('Comment added successfully! Post ID: ' + response.post_id);
+    //                         // Optionally, update the UI to reflect changes
+    //                     } else {
+    //                         alert('Error: ' + response.message);
+    //                     }
+    //                 },
+    //                 error: function() {
+    //                     alert('An error occurred. Please try again.');
+    //                 }
+    //             });
+    //         });
+    //     });
+
+
+    // display new post container
+    document.getElementById('add-btn').addEventListener('click', function () {
+      var container = document.getElementById('toggleContainer');
+      if (container.style.display === 'none' || container.style.display === '') {
+        container.style.display = 'block';
+      } else {
+        container.style.display = 'none';
+      }
+    });
+
+    // hide new post container
+    document.getElementById('close-btn').addEventListener('click', function () {
+      var container = document.getElementById('toggleContainer');
+      container.style.display = 'none';
+    });
+
+    async function sendData(event) {
+      event.preventDefault();
+      const form = document.querySelector('form');
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.text();
+      console.log(result);
+    }
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+main {
+
+    .header {
+        background: rgb(71, 71, 71);
+        height: 25px;
+        width: 100%;
+        padding-bottom: 2%;
+        border-radius: 6px;
+        align-content: center;
+
+        .container {
+            width: 12%;
+
+            ul {
+                display: flex;
+                justify-content: space-between;
+                list-style: none;
+            }
+
+            ul li a {
+                color: aliceblue;
+                text-decoration: none;
+            }
+        }
+    }
+
+    .content {
+        margin-top: 2%;
+        padding-inline: 10px;
+
+        .content-type {
+            display: flex;
+            justify-content: space-between;
+
+            .sub-heading {
+                font-size: 22px;
+                font-weight: 500;
+            }
+
+            .add-btn {
+                background: rgb(68, 67, 67);
+                color: aliceblue;
+                padding: 5px;
+                border-radius: 6px;
+            }
+        }
+    }
+}
